@@ -1,7 +1,11 @@
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,11 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
+import java.io.LineNumberReader;
+import java.io.Reader;
 
 public class FileProccessing {
 	public FileProccessing(String filename) {
 		try {
-			new FileProccessing(filename, 200);
+			new FileProccessing(filename, 10240);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -22,6 +28,9 @@ public class FileProccessing {
 	}
 
 	public FileProccessing(String filename, int ch) throws Exception {
+
+		int numberOfChars = NumberOfChars(filename);
+		int numberOfLines = NumberOfLines(filename);
 
 		Map<String, Integer> hm = new HashMap<String, Integer>();
 		FileReader fk = new FileReader(filename);
@@ -94,7 +103,7 @@ public class FileProccessing {
 		}
 		String reg = ".*\\\\(.*)";
 		String name = filename.replaceAll(reg, "$1");
-		if (hm.size() > 100) {
+		if (hm.size() > 500) {
 
 			FileWriter result = new FileWriter("Result.txt", true);
 
@@ -112,7 +121,8 @@ public class FileProccessing {
 			result.close();
 		} else {
 			System.out.println("~~~~~~~~~~~~~~~~~~~~");
-			System.out.println(name.substring(0, name.lastIndexOf(".")));
+			System.out.println("chars: " + numberOfChars);
+			System.out.println("lines: " + numberOfLines);
 			System.out.println("totals of the words:" + NumofWord);
 			System.out.println("quantity of vocabulary:" + hm.size());
 			for (Map.Entry<String, Integer> str : ll) {
@@ -123,6 +133,33 @@ public class FileProccessing {
 		}
 		fk.close();
 		br.close();
+	}
+
+	private int NumberOfLines(String filename) throws IOException {
+		int lines = 0;
+		File file = new File(filename);
+
+		long fileLength = file.length();
+		LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
+		lineNumberReader.skip(fileLength);
+		lines = lineNumberReader.getLineNumber();
+		lineNumberReader.close();
+
+		return lines;
+	}
+
+	private int NumberOfChars(String filename) throws IOException {
+		int chars = 0;
+		File file = new File(filename);
+		Reader readfile = new InputStreamReader(new FileInputStream(file));
+		int tempchar;
+		while ((tempchar = readfile.read()) != -1) {
+			if (tempchar < 128) {
+				chars++;
+			}
+		}
+		readfile.close();
+		return chars;
 	}
 
 }
