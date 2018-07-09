@@ -3,7 +3,6 @@ import java.io.*;
 
 public class WordFrequencyCount {
 	public static void main(String[] args) throws Exception {
-		long start = System.currentTimeMillis();
 
 		if (args.length == 0) {
 			System.out.println("请输入文件名：");
@@ -38,8 +37,6 @@ public class WordFrequencyCount {
 				new FileProccessing(FileName);
 			}
 		}
-		long end = System.currentTimeMillis();
-		System.out.println("time:" + (end - start) + "ms");
 
 	}
 }
